@@ -1,6 +1,10 @@
 package com.tlabs.budget.app.model;
 
+import java.time.Month;
+
 public class Item {
+
+	private String transactionId;
 
 	private int id;
 
@@ -9,6 +13,16 @@ public class Item {
 	private String description;
 
 	private int value;
+
+	private Month month;
+
+	public Month getMonth() {
+		return month;
+	}
+
+	public void setMonth(Month month) {
+		this.month = month;
+	}
 
 	public String getType() {
 		return type;
@@ -40,6 +54,14 @@ public class Item {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public String getTransactionId() {
+		return transactionId;
+	}
+
+	public void setTransactionId(String transactionId) {
+		this.transactionId = transactionId;
 	}
 
 	@Override
