@@ -10,6 +10,16 @@ public class Budget {
 
 	private int expenseSum;
 
+	private String savingPercentage;
+
+	public String getSavingPercentage() {
+		return savingPercentage;
+	}
+
+	public void setSavingPercentage(String savingPercentage) {
+		this.savingPercentage = savingPercentage;
+	}
+
 	public int getBudgetValue() {
 		return budgetValue;
 	}
