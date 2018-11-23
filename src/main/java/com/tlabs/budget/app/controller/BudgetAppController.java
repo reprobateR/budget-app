@@ -1,5 +1,7 @@
 package com.tlabs.budget.app.controller;
 
+import java.util.concurrent.CompletableFuture;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,9 +35,11 @@ public class BudgetAppController {
 		logger.info("Controller Main Thread " + Thread.currentThread().getName());
 
 		budgetAppRepository.saveTransactions(budgetSheet.getData());
+		
+		//CompletableFuture.
 
+		//Completeable future tasks
 		budgetAppRepository.getMonthlyBudgetSheet();
-
 		budgetAppRepository.saveOrUpdateBudgetSheet();
 
 		long endTime = System.currentTimeMillis();

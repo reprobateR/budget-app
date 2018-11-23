@@ -11,18 +11,12 @@ public class Item {
 	private String type;
 
 	private String description;
+	
+	private String itemPercentage;
 
 	private int value;
 
-	private Month month;
-
-	public Month getMonth() {
-		return month;
-	}
-
-	public void setMonth(Month month) {
-		this.month = month;
-	}
+	private String month;
 
 	public String getType() {
 		return type;
@@ -66,12 +60,28 @@ public class Item {
 
 	@Override
 	public String toString() {
-		return "Item [type=" + type + ", description=" + description
-				+ ", value=" + value + ", id=" + id + "]";
+		return "Item [transactionId=" + transactionId + ", id=" + id + ", type=" + type + ", description=" + description
+				+ ", itemPercentage=" + itemPercentage + ", value=" + value + ", month=" + month + "]";
 	}
 
 	public Item() {
 
+	}
+
+	public String getItemPercentage() {
+		return itemPercentage;
+	}
+
+	public void setItemPercentage(String itemPercentage) {
+		this.itemPercentage = itemPercentage;
+	}
+
+	public String getMonth() {
+		return month;
+	}
+
+	public void setMonth(String month) {
+		this.month = month;
 	}
 
 }
