@@ -27,7 +27,6 @@ public class DataProcessor {
 		}
 
 		return data;
-
 	}
 
 	private void createTransactionIndicator(String typeInd, List<Item> itemsList) {

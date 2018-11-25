@@ -1,13 +1,11 @@
 package com.tlabs.budget.app.repository;
 
-import com.tlabs.budget.app.model.Data;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface BudgetAppRepository {
+import com.tlabs.budget.app.model.Item;
 
-	public void saveTransactions(Data data);
-
-	public void getMonthlyBudgetSheet();
-
-	public void saveOrUpdateBudgetSheet();
+@Repository
+public interface BudgetAppRepository extends JpaRepository<Item, Long>{
 
 }

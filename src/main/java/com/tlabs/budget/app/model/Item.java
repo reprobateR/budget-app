@@ -1,21 +1,34 @@
 package com.tlabs.budget.app.model;
 
-import java.time.Month;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
+@Entity
+@Table(name = "transactions")
 public class Item {
 
+	@Id
+	@Column(name = "transaction_id")
 	private String transactionId;
 
+	@Column(name = "id")
 	private int id;
 
+	@Column(name = "type")
 	private String type;
 
+	@Column(name = "description")
 	private String description;
 	
+	@Column(name = "item_percentage")
 	private String itemPercentage;
 
+	@Column(name = "value")
 	private int value;
 
+	@Column(name = "month")
 	private String month;
 
 	public String getType() {
