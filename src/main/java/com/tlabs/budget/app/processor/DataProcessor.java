@@ -6,13 +6,28 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.stereotype.Component;
 
+import com.sun.istack.internal.logging.Logger;
 import com.tlabs.budget.app.model.Data;
 import com.tlabs.budget.app.model.Item;
 
 @Component
 public class DataProcessor {
+	
+	private static final Logger logger = Logger.getLogger(DataProcessor.class);
+	
+	private Calendar cal= null;
+	private String month = "";
+	
+	@PostConstruct
+	public void init(){
+		cal = Calendar.getInstance();
+		month = Month.of(cal.get(Calendar.MONTH) + 1).getDisplayName(TextStyle.FULL, Locale.getDefault());
+		logger.info("Post Construct calendar and month " + month);
+	}
 
 	public Data createTransactionData(Data data) {
 
@@ -32,17 +47,20 @@ public class DataProcessor {
 	private void createTransactionIndicator(String typeInd, List<Item> itemsList) {
 
 		for (Item item : itemsList) {
-
-			StringBuilder builder = new StringBuilder();
-			Calendar cal = Calendar.getInstance();
-
+    		StringBuilder builder = new StringBuilder();
 			builder.append(typeInd).append(String.valueOf(cal.getTimeInMillis())).append("_").append(item.getId());
 			item.setTransactionId(builder.toString());
-
-			item.setMonth(Month.of(cal.get(Calendar.MONTH) + 1).getDisplayName(TextStyle.FULL, Locale.getDefault()));
-
+			item.setMonth(month);
 		}
 
 	}
 
+	public String getMonth() {
+		return month;
+	}
+
+	public void setMonth(String month) {
+		this.month = month;
+	}
+	
 }

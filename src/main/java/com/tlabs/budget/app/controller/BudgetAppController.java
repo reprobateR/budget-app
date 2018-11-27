@@ -43,7 +43,7 @@ public class BudgetAppController {
 
 		budgetAppService.saveTransactions(budgetSheet.getData());
 		
-		CompletableFuture.supplyAsync(() -> budgetSheetRepository.get())
+		CompletableFuture.supplyAsync(() -> budgetSheetRepository.getExistingOrCreateBudget(budgetSheet.getBudget()))
 					.thenAccept(budget -> budgetSheetRepository.saveOrUpdateBudgetSheet(budget)).get();
 		
 		} catch (InterruptedException | ExecutionException e) {
