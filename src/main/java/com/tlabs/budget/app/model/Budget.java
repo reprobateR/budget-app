@@ -12,7 +12,7 @@ import javax.persistence.Table;
 public class Budget {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id", updatable = false, nullable = false)
 	private int id;
 
@@ -28,9 +28,6 @@ public class Budget {
 	@Column(name ="expense_sum")
 	private int expenseSum;
 
-	@Column(name ="saving_percentage")
-	private String savingPercentage;
-	
 	@Column(name = "month")
 	private String month;
 	
@@ -48,14 +45,6 @@ public class Budget {
 
 	public void setMonth(String month) {
 		this.month = month;
-	}
-
-	public String getSavingPercentage() {
-		return savingPercentage;
-	}
-
-	public void setSavingPercentage(String savingPercentage) {
-		this.savingPercentage = savingPercentage;
 	}
 
 	public int getBudgetValue() {
@@ -93,8 +82,7 @@ public class Budget {
 	@Override
 	public String toString() {
 		return "Budget [budgetValue=" + budgetValue + ", expensePercentage=" + expensePercentage + ", incomeSum="
-				+ incomeSum + ", expenseSum=" + expenseSum + ", savingPercentage=" + savingPercentage + ", month="
-				+ month + "]";
+				+ incomeSum + ", expenseSum=" + expenseSum + ", month="	+ month + "]";
 	}
 
 	public Budget() {
