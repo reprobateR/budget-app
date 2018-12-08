@@ -1,9 +1,10 @@
 package com.tlabs.budget.app.service;
 
+import com.tlabs.budget.app.exception.BudgetAppException;
 import com.tlabs.budget.app.model.Data;
 
 public interface BudgetAppService {
 
-	public void saveTransactions(Data data);
+	public void saveTransactions(Data data) throws BudgetAppException;
 
 }

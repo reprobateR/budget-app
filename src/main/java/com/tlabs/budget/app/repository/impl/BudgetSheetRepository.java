@@ -37,7 +37,7 @@ public class BudgetSheetRepository implements Supplier<Budget>{
 			budgetValueRepository.save(newBudget);
 		} else if (existingBudget != null) {
 			logger.info("Budget retrevied " + existingBudget);
-			updateBudget(existingBudget, newBudget);
+	  		updateBudget(existingBudget, newBudget);
 			newBudget.setId(existingBudget.getId());
 			budgetValueRepository.save(newBudget);
 		}
@@ -80,22 +80,7 @@ public class BudgetSheetRepository implements Supplier<Budget>{
 	
 	}
 
-
-	public void saveOrUpdateBudgetSheet(Budget budget) {
-
-		logger.info("saveOrUpdateBudgetSheet task thread " + Thread.currentThread().getName());
-
-		try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-
-		logger.info("Complete saveOrUpdateBudgetSheet " + Thread.currentThread().getName());
-	}
-
-
-	@Override
+    @Override
 	public Budget get() {
 
 

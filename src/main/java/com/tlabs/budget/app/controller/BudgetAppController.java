@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.tlabs.budget.app.exception.BudgetAppException;
 import com.tlabs.budget.app.model.BudgetSheet;
 import com.tlabs.budget.app.repository.impl.BudgetSheetRepository;
 import com.tlabs.budget.app.service.BudgetAppService;
@@ -30,7 +31,7 @@ public class BudgetAppController {
 	private BudgetSheetRepository budgetSheetRepository;
 
 	@PostMapping("/save")
-	public ResponseEntity<String> getTransactions(@RequestBody BudgetSheet budgetSheet){
+	public ResponseEntity<String> getTransactions(@RequestBody BudgetSheet budgetSheet) throws BudgetAppException{
 
 		long startTime = System.currentTimeMillis();
 		try {
@@ -40,16 +41,16 @@ public class BudgetAppController {
 		logger.info("Start Time " + startTime/1000);
 
 		logger.info("Controller Main Thread " + Thread.currentThread().getName());
-
+	
 		budgetAppService.saveTransactions(budgetSheet.getData());
+		CompletableFuture.supplyAsync(() -> budgetSheetRepository.getExistingOrCreateBudget(budgetSheet.getBudget())).get();
 		
-		CompletableFuture.supplyAsync(() -> budgetSheetRepository.getExistingOrCreateBudget(budgetSheet.getBudget()))
-					.thenAccept(budget -> budgetSheetRepository.saveOrUpdateBudgetSheet(budget)).get();
+		throw new BudgetAppException("testing Exceptioon");
 		
 		} catch (InterruptedException | ExecutionException e) {
 			logger.error(e.getMessage(), e);
 			return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(e.getMessage());
-		} finally {
+		}finally {
 			long endTime = System.currentTimeMillis();
 
 			logger.info("End Time " + endTime/1000);
@@ -58,7 +59,7 @@ public class BudgetAppController {
 
 			logger.info("End controller main thread " + Thread.currentThread().getName());
 		}
-		return ResponseEntity.ok().body("Success!!");
+		//return ResponseEntity.ok().body("Success!!");
     }
 
 }

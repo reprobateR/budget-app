@@ -7,6 +7,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.tlabs.budget.app.exception.BudgetAppException;
 import com.tlabs.budget.app.model.Data;
 import com.tlabs.budget.app.processor.DataProcessor;
 import com.tlabs.budget.app.repository.BudgetAppRepository;
@@ -26,9 +27,9 @@ public class BudgetAppServiceImpl implements BudgetAppService {
 	@Override
 	@Async
 	@Transactional
-	public void saveTransactions(Data data) {
-
-		logger.info("Save transaction task thread " + Thread.currentThread().getName());
+	public void saveTransactions(Data data) throws BudgetAppException {
+		
+		/*logger.info("Save transaction task thread " + Thread.currentThread().getName());
 		
 		Data updatedData = dataProcessor.createTransactionData(data);
 		
@@ -37,7 +38,7 @@ public class BudgetAppServiceImpl implements BudgetAppService {
 		budgetAppRepository.saveAll(updatedData.getExpenses());
 		budgetAppRepository.saveAll(updatedData.getIncomes());
 	
-		logger.info("Complete  - saveTransactions ");
+		logger.info("Complete  - saveTransactions ");*/
 	}
 
 }
