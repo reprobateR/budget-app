@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import com.tlabs.budget.app.model.Budget;
 
 @Repository
-public interface BudgetValueRepository  extends JpaRepository<Budget,Long> {
+public interface BudgetValueRepository extends JpaRepository<Budget,Long> {
 	
 	Budget findByMonth(String month);
 	
