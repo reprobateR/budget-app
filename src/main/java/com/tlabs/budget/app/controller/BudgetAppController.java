@@ -3,6 +3,7 @@ package com.tlabs.budget.app.controller;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,9 +17,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tlabs.budget.app.exception.BudgetAppException;
+import com.tlabs.budget.app.model.Budget;
 import com.tlabs.budget.app.model.BudgetSheet;
 import com.tlabs.budget.app.model.Category;
-import com.tlabs.budget.app.repository.impl.BudgetSheetRepository;
+import com.tlabs.budget.app.model.Charts;
+import com.tlabs.budget.app.model.Item;
+import com.tlabs.budget.app.repository.impl.BudgetSheetService;
 import com.tlabs.budget.app.service.BudgetAppService;
 
 @RestController
@@ -31,7 +35,7 @@ public class BudgetAppController {
 	private BudgetAppService budgetAppService;
 	
 	@Autowired
-	private BudgetSheetRepository budgetSheetRepository;
+	private BudgetSheetService budgetSheetService;
 
 	@PostMapping("/save")
 	public ResponseEntity<String> getTransactions(@RequestBody BudgetSheet budgetSheet) throws BudgetAppException{
@@ -46,9 +50,13 @@ public class BudgetAppController {
 		logger.info("Controller Main Thread " + Thread.currentThread().getName());
 	
 		budgetAppService.saveTransactions(budgetSheet.getData());
-		CompletableFuture.supplyAsync(() -> budgetSheetRepository.getExistingOrCreateBudget(budgetSheet.getBudget())).get();
+		Future<Budget> budgetFuture = CompletableFuture.supplyAsync(() -> budgetSheetService.apply(budgetSheet.getBudget()));
 		
-		throw new BudgetAppException("testing Exceptioon");
+		Budget finalBudgetCalculated = budgetFuture.get();
+		
+		logger.info("Final Budget Calculated and Saved: " + finalBudgetCalculated);
+		
+		//throw new BudgetAppException("testing Exceptioon");
 		
 		} catch (InterruptedException | ExecutionException e) {
 			logger.error(e.getMessage(), e);
@@ -57,12 +65,10 @@ public class BudgetAppController {
 			long endTime = System.currentTimeMillis();
 
 			logger.info("End Time " + endTime/1000);
-
 			logger.info("Total End Time " + (endTime - startTime)/1000);
-
 			logger.info("End controller main thread " + Thread.currentThread().getName());
 		}
-		//return ResponseEntity.ok().body("Success!!");
+		return ResponseEntity.ok().body("Success!!");
     }
 	
 	@GetMapping("/category")
@@ -75,6 +81,20 @@ public class BudgetAppController {
 		logger.info("Get Catergories End");
 		
 		return ResponseEntity.ok().body(catList);
+	}
+	
+	@GetMapping("/indicators")
+	public void getGraphIndicatorResponse(){
+		
+		logger.info("Creation of Graph Indicator Response JSON Begins");
+		
+		List<Item> expenseList = budgetAppService.getTransactions();
+		
+		System.out.println(expenseList);
+		
+		List<Charts> chartResponse = budgetAppService.createGraphResponse(expenseList);
+		
+			
 	}
 
 }
