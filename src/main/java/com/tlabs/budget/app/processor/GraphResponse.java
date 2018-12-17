@@ -38,7 +38,7 @@ public class GraphResponse {
 	@Value("${hoverBorderColor}")
 	private String hoverBorderColor;
 
-	public Charts createChartData(String type, List<Item> expenseList, String label) {
+	public Charts createChartData(String type, List<Item> expenseList, String label, String text) {
 
 		Charts chart = new Charts();
 		ChartData chartData = new ChartData();
@@ -48,29 +48,20 @@ public class GraphResponse {
 		
 		List<String> labelList = new ArrayList<>();
 		List<Integer> dataList = new ArrayList<>();
+		List<String> availableColors = getBackGroundColors(colors);
 		List<String> backGroundColors = new ArrayList<>();
 
-		String[] colorList = colors.split(",");
-		int colorCounter = 0;
-
+    	int colorCounter = 0;
 		for (Item item : expenseList) {
-
-			System.out.println("Entering Item Values");
-			System.out.println(item.getDescription());
-			System.out.println(item.getValue());
-			System.out.println(colorCounter);
 
 			labelList.add(item.getDescription());
 			dataList.add(item.getValue());
 
-			if (colorCounter >= colorList.length) {
+			if (colorCounter >= availableColors.size()) {
 				colorCounter = 0;
 			}
-
-			System.out.println(colorList[colorCounter]);
-			backGroundColors.add(colorList[colorCounter]);
+			backGroundColors.add(availableColors.get(colorCounter));
 			colorCounter++;
-
 		}
 
 		chartData.setLabels(labelList);
@@ -92,7 +83,7 @@ public class GraphResponse {
 		
 		Title title = new Title();
 		title.setDisplay(true);
-		title.setText("Expense Values Of Current Month");
+		title.setText(text);
 		title.setFontsize(25);
 		
 		Legend legend = new Legend();
@@ -123,5 +114,23 @@ public class GraphResponse {
 		}
 
 		return null;
+	}
+
+	private List<String> getBackGroundColors(String colors2) {
+		
+		List<String> colorsList = new ArrayList<String>();
+		StringBuilder builder = new StringBuilder(colors2);
+		int indexCounter = 0;
+		int initialIndex = 0;
+		
+		while(initialIndex < builder.length()) {
+			if(initialIndex == 0) {
+				indexCounter = builder.indexOf(")");
+			}
+			colorsList.add(builder.substring(initialIndex, indexCounter + 1));
+			initialIndex = indexCounter + 2;
+			indexCounter = builder.indexOf(")", initialIndex);
+		}
+		return colorsList;
 	}
 }

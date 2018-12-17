@@ -6,7 +6,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -39,9 +38,6 @@ public class BudgetAppServiceImpl implements BudgetAppService {
 	
 	@Autowired
 	private GraphResponse graphResponse;
-	
-	@Value("${chart.types}")
-	private String chartTypes;
 
 	@Override
 	@Async
@@ -96,11 +92,13 @@ public class BudgetAppServiceImpl implements BudgetAppService {
 	@Override
 	public List<Charts> createGraphResponse(List<Item> expenseList) {
 		
-		System.out.println("Create Graph Response Begins ");
+		logger.info("Create Graph Response Begins");
+       
+		// TODO: Create a distinct list of expenses, with expense values added.And the percentages calculated.
 		
-        String[] chartTypeValues = chartTypes.split(",");
-    	graphResponse.createChartData(chartTypeValues[0], expenseList, "Expense Values");
-		
+        String text = "Expense Values Of Current Month";
+        Charts barChart = graphResponse.createChartData("bar", expenseList, "Expense Values", text);
+	
 		return null;
 	}
 
