@@ -5,6 +5,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @Entity
 @Table(name = "transactions")
 public class Item {
@@ -23,6 +25,7 @@ public class Item {
 	private String description;
 	
 	@Column(name = "item_percentage")
+	@JsonProperty("item__percentage")
 	private String itemPercentage;
 
 	@Column(name = "value")

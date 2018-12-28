@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.tlabs.budget.app.exception.BudgetAppException;
+import com.tlabs.budget.app.model.Budget;
 import com.tlabs.budget.app.model.Category;
 import com.tlabs.budget.app.model.Charts;
 import com.tlabs.budget.app.model.Data;
@@ -19,6 +20,7 @@ import com.tlabs.budget.app.model.Item;
 import com.tlabs.budget.app.processor.DataProcessor;
 import com.tlabs.budget.app.processor.GraphResponse;
 import com.tlabs.budget.app.repository.BudgetAppRepository;
+import com.tlabs.budget.app.repository.BudgetValueRepository;
 import com.tlabs.budget.app.repository.CategoryRepository;
 import com.tlabs.budget.app.service.BudgetAppService;
 
@@ -38,6 +40,9 @@ public class BudgetAppServiceImpl implements BudgetAppService {
 	
 	@Autowired
 	private GraphResponse graphResponse;
+	
+	@Autowired
+	private BudgetValueRepository budgetValueRepository;
 
 	@Override
 	@Async
@@ -85,7 +90,7 @@ public class BudgetAppServiceImpl implements BudgetAppService {
 		logger.info("Printing Expense List Retreived: ");
 		expenseList.forEach(System.out::println);
 		
-		return expenseList;		
+		return expenseList;
 	}
 
 
@@ -93,13 +98,25 @@ public class BudgetAppServiceImpl implements BudgetAppService {
 	public List<Charts> createGraphResponse(List<Item> expenseList) {
 		
 		logger.info("Create Graph Response Begins");
-       
-		// TODO: Create a distinct list of expenses, with expense values added.And the percentages calculated.
 		
-        String text = "Expense Values Of Current Month";
-        Charts barChart = graphResponse.createChartData("bar", expenseList, "Expense Values", text);
+		List<Charts> chartsList = new ArrayList<>();
+		
+		Budget budget = budgetValueRepository.findByMonth(dataProcessor.getMonth());
+		Integer totalIncomeSum = budget.getIncomeSum();
+   
+		// TODO: Create a distinct list of expenses, with expense values added.And the percentages calculated.
+		List<Item> chartItemValues = dataProcessor.distinctExpenseCategorization(expenseList,totalIncomeSum);
+		
+        String barText = "Expense Values Of Current Month";
+        Charts barChart = graphResponse.createChartData("bar", chartItemValues, "Expense Values", barText);
+        
+        String pieText = "Expense Percentages Of Current Month";
+        Charts pieChart = graphResponse.createChartData("pie", chartItemValues, "Expense Values", pieText);
+        
+        chartsList.add(barChart);
+        chartsList.add(pieChart);
 	
-		return null;
+		return chartsList;
 	}
 
 }

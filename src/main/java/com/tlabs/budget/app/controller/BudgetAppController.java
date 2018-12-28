@@ -56,7 +56,7 @@ public class BudgetAppController {
 		
 		logger.info("Final Budget Calculated and Saved: " + finalBudgetCalculated);
 		
-		//throw new BudgetAppException("testing Exceptioon");
+		//throw new BudgetAppException("testing Exception");
 		
 		} catch (InterruptedException | ExecutionException e) {
 			logger.error(e.getMessage(), e);
@@ -84,7 +84,7 @@ public class BudgetAppController {
 	}
 	
 	@GetMapping("/indicators")
-	public void getGraphIndicatorResponse(){
+	public ResponseEntity<List<Charts>> getGraphIndicatorResponse(){
 		
 		logger.info("Creation of Graph Indicator Response JSON Begins");
 		
@@ -93,7 +93,7 @@ public class BudgetAppController {
 		System.out.println(expenseList);
 		
 		List<Charts> chartResponse = budgetAppService.createGraphResponse(expenseList);
-		
+		return ResponseEntity.ok().body(chartResponse);
 			
 	}
 

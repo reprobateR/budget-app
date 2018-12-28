@@ -1,10 +1,14 @@
 package com.tlabs.budget.app.processor;
 
+import java.text.DecimalFormat;
 import java.time.Month;
 import java.time.format.TextStyle;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
@@ -42,6 +46,39 @@ public class DataProcessor {
 		}
 
 		return data;
+	}
+	
+	public List<Item> distinctExpenseCategorization(List<Item> expenseList, Integer totalIncomeSum){
+		
+		Map<String,Integer> expenseValueMap = new HashMap<>();
+		expenseList.forEach(item -> {
+			if(expenseValueMap.containsKey(item.getDescription())){
+				expenseValueMap.put(item.getDescription(), expenseValueMap.get(item.getDescription()) + item.getValue());
+			} else {
+				expenseValueMap.put(item.getDescription(), item.getValue());
+			}
+		});
+		
+		List<Item> finalExpenseValueList = expenseValueMap.entrySet().stream().map(e -> {
+			Item item  = new Item();
+			item.setDescription(e.getKey());
+			item.setValue(e.getValue());
+			logger.info("Calculated Percentage " + calculateTotalPercentage(e.getValue(), totalIncomeSum));
+			item.setItemPercentage(calculateTotalPercentage(e.getValue(), totalIncomeSum));
+			return item;
+		}).collect(Collectors.toList());
+		
+		System.out.println(finalExpenseValueList);
+		return finalExpenseValueList;
+	}
+
+	public String calculateTotalPercentage(Integer expenseValue, Integer totalIncomeSum) {
+		logger.info("IN calcualte percentage");
+		Double newExpensePercentage = Double
+				.valueOf((Double.valueOf(expenseValue) / Double.valueOf(totalIncomeSum)) * 100);
+		DecimalFormat df = new DecimalFormat("0.00");
+		String expPerStringToUpate = df.format(newExpensePercentage);
+		return expPerStringToUpate;
 	}
 
 	private void createTypeIndicatorAndStandardize(String typeInd, List<Item> itemsList) {

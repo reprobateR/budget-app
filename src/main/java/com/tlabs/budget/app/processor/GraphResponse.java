@@ -47,7 +47,7 @@ public class GraphResponse {
 		chart.setType(type);
 		
 		List<String> labelList = new ArrayList<>();
-		List<Integer> dataList = new ArrayList<>();
+		List<String> dataList = new ArrayList<>();
 		List<String> availableColors = getBackGroundColors(colors);
 		List<String> backGroundColors = new ArrayList<>();
 
@@ -55,8 +55,11 @@ public class GraphResponse {
 		for (Item item : expenseList) {
 
 			labelList.add(item.getDescription());
-			dataList.add(item.getValue());
-
+			if (type.equals("bar")) {
+				dataList.add(String.valueOf(item.getValue()));
+			} else if (type.equals("pie")) {
+				dataList.add(item.getItemPercentage());
+			}
 			if (colorCounter >= availableColors.size()) {
 				colorCounter = 0;
 			}
@@ -113,7 +116,7 @@ public class GraphResponse {
 			e.printStackTrace();
 		}
 
-		return null;
+		return chart;
 	}
 
 	private List<String> getBackGroundColors(String colors2) {

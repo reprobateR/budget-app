@@ -5,7 +5,7 @@ import java.util.List;
 public class Dataset {
 	
 	private String label;
-    private List<Integer> data;
+    private List<String> data;
 	private List<String> backgroundColor;
 	private int borderWidth;
 	private String borderColor;
@@ -17,10 +17,10 @@ public class Dataset {
 	public void setLabel(String label) {
 		this.label = label;
 	}
-	public List<Integer> getData() {
+	public List<String> getData() {
 		return data;
 	}
-	public void setData(List<Integer> data) {
+	public void setData(List<String> data) {
 		this.data = data;
 	}
 	public List<String> getBackgroundColor() {

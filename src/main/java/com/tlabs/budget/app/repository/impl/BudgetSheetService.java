@@ -1,6 +1,5 @@
 package com.tlabs.budget.app.repository.impl;
 
-import java.text.DecimalFormat;
 import java.util.function.Function;
 
 import org.slf4j.Logger;
@@ -47,37 +46,34 @@ public class BudgetSheetService implements Function<Budget, Budget> {
 
 	private void updateBudget(Budget existingBudget, Budget newBudget) {
 
-		System.out.println("Existing Budget " + existingBudget);
+		Integer existingIncomeSum = existingBudget.getIncomeSum();
+		Integer existingExpenseSum = existingBudget.getExpenseSum();
+		Integer newIncomeSum = newBudget.getIncomeSum();
+		Integer newExpenseSum = newBudget.getExpenseSum();
 
-		if (newBudget.getIncomeSum() != 0) {
-			int existingIncome = existingBudget.getIncomeSum();
-			System.out.println("Existing Sum " + existingIncome);
-			newBudget.setIncomeSum(existingIncome + newBudget.getIncomeSum());
-			System.out.println("New income sum " + newBudget.getIncomeSum());
+		Integer finalIncomeSum = 0;
+		Integer finalExpenseSum = 0;
+
+		if (newIncomeSum != 0) {
+			newBudget.setIncomeSum(existingIncomeSum + newIncomeSum);
+			finalIncomeSum = newBudget.getIncomeSum();
+		} else {
+			finalIncomeSum = existingIncomeSum;
 		}
-
 		if (newBudget.getExpenseSum() != 0) {
-			int existingExpense = existingBudget.getExpenseSum();
-			System.out.println("Existing expense " + existingExpense);
-			newBudget.setExpenseSum(newBudget.getExpenseSum() + existingExpense);
-			System.out.println("New income sum " + newBudget.getIncomeSum());
+			newBudget.setExpenseSum(newExpenseSum + existingExpenseSum);
+			finalExpenseSum = newBudget.getExpenseSum();
+		} else {
+			finalExpenseSum = existingExpenseSum;
 		}
 
-		Double newExpensePercentage = (Double.valueOf(newBudget.getExpenseSum())
-				/ Double.valueOf(newBudget.getIncomeSum())) * 100;
-
-		System.out.println("calculated Double " + newExpensePercentage);
-
-		DecimalFormat df = new DecimalFormat("0.00");
-		String expPerStringToUpate = df.format(newExpensePercentage);
-		System.out.println("ormatted Double String " + expPerStringToUpate);
-
+		String expPerStringToUpate = 
+				dataProcessor.calculateTotalPercentage(finalExpenseSum, finalIncomeSum);
+		newBudget.setIncomeSum(finalIncomeSum);
+		newBudget.setExpenseSum(finalExpenseSum);
 		newBudget.setExpensePercentage(expPerStringToUpate);
-		newBudget.setBudgetValue(newBudget.getIncomeSum() - newBudget.getExpenseSum());
+		newBudget.setBudgetValue(finalIncomeSum - finalExpenseSum);
 		newBudget.setMonth(existingBudget.getMonth());
-
-		System.out.println("New inal budget to save " + newBudget);
-
 	}
 
 }
