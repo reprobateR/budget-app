@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -30,7 +31,7 @@ public class DataProcessor {
 	public void init() {
 		cal = Calendar.getInstance();
 		month = Month.of(cal.get(Calendar.MONTH) + 1).getDisplayName(TextStyle.FULL, Locale.getDefault());
-		logger.info("Post Construct calendar and month " + month);
+		logger.info("Post Construct calendar and month:= " + month);
 	}
 
 	public Data createTransactionData(Data data) {
@@ -48,32 +49,39 @@ public class DataProcessor {
 		return data;
 	}
 	
-	public List<Item> distinctExpenseCategorization(List<Item> expenseList, Integer totalIncomeSum){
-		
-		Map<String,Integer> expenseValueMap = new HashMap<>();
+	public List<Item> distinctExpenseCategorization(List<Item> expenseList, Integer totalIncomeSum) {
+
+		Map<String, Integer> expenseValueMap = new HashMap<>();
 		expenseList.forEach(item -> {
-			if(expenseValueMap.containsKey(item.getDescription())){
-				expenseValueMap.put(item.getDescription(), expenseValueMap.get(item.getDescription()) + item.getValue());
-			} else {
-				expenseValueMap.put(item.getDescription(), item.getValue());
-			}
+			addValuesBasedOnExpenseType(expenseValueMap, item);
 		});
-		
+
 		List<Item> finalExpenseValueList = expenseValueMap.entrySet().stream().map(e -> {
-			Item item  = new Item();
-			item.setDescription(e.getKey());
-			item.setValue(e.getValue());
-			logger.info("Calculated Percentage " + calculateTotalPercentage(e.getValue(), totalIncomeSum));
-			item.setItemPercentage(calculateTotalPercentage(e.getValue(), totalIncomeSum));
-			return item;
+			return setItemPercentageValue(totalIncomeSum, e);
 		}).collect(Collectors.toList());
-		
-		System.out.println(finalExpenseValueList);
+
 		return finalExpenseValueList;
 	}
 
+	private void addValuesBasedOnExpenseType(Map<String, Integer> expenseValueMap, Item item) {
+		if (expenseValueMap.containsKey(item.getDescription())) {
+			expenseValueMap.put(item.getDescription(),
+					expenseValueMap.get(item.getDescription()) + item.getValue());
+		} else {
+			expenseValueMap.put(item.getDescription(), item.getValue());
+		}
+	}
+
+	private Item setItemPercentageValue(Integer totalIncomeSum, Entry<String, Integer> e) {
+		Item item  = new Item();
+		item.setDescription(e.getKey());
+		item.setValue(e.getValue());
+		logger.info("Calculated Percentage:= " + calculateTotalPercentage(e.getValue(), totalIncomeSum));
+		item.setItemPercentage(calculateTotalPercentage(e.getValue(), totalIncomeSum));
+		return item;
+	}
+
 	public String calculateTotalPercentage(Integer expenseValue, Integer totalIncomeSum) {
-		logger.info("IN calcualte percentage");
 		Double newExpensePercentage = Double
 				.valueOf((Double.valueOf(expenseValue) / Double.valueOf(totalIncomeSum)) * 100);
 		DecimalFormat df = new DecimalFormat("0.00");

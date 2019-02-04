@@ -62,6 +62,60 @@ public class BudgetAppServiceImpl implements BudgetAppService {
 
 	}
 	
+	@Override
+	@Async
+	@Transactional
+	public void saveOrUpdateBudget(Budget newBudget) {
+
+		String month = dataProcessor.getMonth();
+
+		logger.info("Month Available " + month);
+
+		Budget existingBudget = budgetValueRepository.findByMonth(dataProcessor.getMonth());
+
+		if (existingBudget == null) {
+			newBudget.setMonth(month);
+			budgetValueRepository.save(newBudget);
+		} else if (existingBudget != null) {
+			logger.info("Budget retrieved " + existingBudget);
+			updateBudget(existingBudget, newBudget);
+			newBudget.setId(existingBudget.getId());
+			budgetValueRepository.save(newBudget);
+		}
+	
+	}
+	
+	private void updateBudget(Budget existingBudget, Budget newBudget) {
+
+		Integer existingIncomeSum = existingBudget.getIncomeSum();
+		Integer existingExpenseSum = existingBudget.getExpenseSum();
+		Integer newIncomeSum = newBudget.getIncomeSum();
+		Integer newExpenseSum = newBudget.getExpenseSum();
+
+		Integer finalIncomeSum = 0;
+		Integer finalExpenseSum = 0;
+
+		if (newIncomeSum != 0) {
+			newBudget.setIncomeSum(existingIncomeSum + newIncomeSum);
+			finalIncomeSum = newBudget.getIncomeSum();
+		} else {
+			finalIncomeSum = existingIncomeSum;
+		}
+		if (newBudget.getExpenseSum() != 0) {
+			newBudget.setExpenseSum(newExpenseSum + existingExpenseSum);
+			finalExpenseSum = newBudget.getExpenseSum();
+		} else {
+			finalExpenseSum = existingExpenseSum;
+		}
+
+		String expPerStringToUpate = 
+				dataProcessor.calculateTotalPercentage(finalExpenseSum, finalIncomeSum);
+		newBudget.setIncomeSum(finalIncomeSum);
+		newBudget.setExpenseSum(finalExpenseSum);
+		newBudget.setExpensePercentage(expPerStringToUpate);
+		newBudget.setBudgetValue(finalIncomeSum - finalExpenseSum);
+		newBudget.setMonth(existingBudget.getMonth());
+	}
 	
     @Override
     @Cacheable("categoryList")
@@ -118,5 +172,6 @@ public class BudgetAppServiceImpl implements BudgetAppService {
 	
 		return chartsList;
 	}
+
 
 }

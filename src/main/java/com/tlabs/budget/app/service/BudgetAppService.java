@@ -3,6 +3,7 @@ package com.tlabs.budget.app.service;
 import java.util.List;
 
 import com.tlabs.budget.app.exception.BudgetAppException;
+import com.tlabs.budget.app.model.Budget;
 import com.tlabs.budget.app.model.Category;
 import com.tlabs.budget.app.model.Charts;
 import com.tlabs.budget.app.model.Data;
@@ -17,5 +18,7 @@ public interface BudgetAppService {
 	public List<Item> getTransactions();
 	
 	public List<Charts> createGraphResponse(List<Item> expenseList);
+	
+	public void saveOrUpdateBudget(Budget budget);
 	
 }

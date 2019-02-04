@@ -2,17 +2,17 @@ package com.tlabs.budget.app.exception;
 
 import org.springframework.http.HttpStatus;
 
-public class BudgetAppErrorResponse {
+public class BudgetAppResponse {
 	
 	private String message;
 	private HttpStatus httpStatus;
 	private Long timestamp;
 	
-	public BudgetAppErrorResponse() {
+	public BudgetAppResponse() {
 		
 	}
 
-	public BudgetAppErrorResponse(String message, HttpStatus httpStatus, Long timestamp) {
+	public BudgetAppResponse(String message, HttpStatus httpStatus, Long timestamp) {
 		this.message = message;
 		this.httpStatus = httpStatus;
 		this.timestamp = timestamp;

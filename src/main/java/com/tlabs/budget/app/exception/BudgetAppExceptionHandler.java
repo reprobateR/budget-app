@@ -1,19 +1,17 @@
-package com.tlabs.budget.app;
+package com.tlabs.budget.app.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import com.tlabs.budget.app.exception.BudgetAppErrorResponse;
-
 @ControllerAdvice
-public class BudgetAppGlobalExceptionHandler {
+public class BudgetAppExceptionHandler {
 
 	@ExceptionHandler
-	public ResponseEntity<BudgetAppErrorResponse> handleException(Exception exception) {
+	public ResponseEntity<BudgetAppResponse> handleException(Exception exception) {
 
-		BudgetAppErrorResponse error = new BudgetAppErrorResponse();
+		BudgetAppResponse error = new BudgetAppResponse();
 
 		error.setMessage(exception.getMessage());
 		error.setHttpStatus(HttpStatus.INTERNAL_SERVER_ERROR);
