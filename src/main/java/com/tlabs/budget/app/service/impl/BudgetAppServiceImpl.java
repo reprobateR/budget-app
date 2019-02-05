@@ -49,11 +49,9 @@ public class BudgetAppServiceImpl implements BudgetAppService {
 	@Transactional
 	public void saveTransactions(Data data) throws BudgetAppException {
 
-		logger.info("Save transaction task thread " + Thread.currentThread().getName());
-
 		Data updatedData = dataProcessor.createTransactionData(data);
 
-		logger.info("updated data before insert" + updatedData);
+		logger.info("Standardized data before insert" + updatedData);
 
 		budgetAppRepository.saveAll(updatedData.getExpenses());
 		budgetAppRepository.saveAll(updatedData.getIncomes());
@@ -108,6 +106,11 @@ public class BudgetAppServiceImpl implements BudgetAppService {
 			finalExpenseSum = existingExpenseSum;
 		}
 
+		updateFinalBudget(existingBudget, newBudget, finalIncomeSum, finalExpenseSum);
+	}
+
+	private void updateFinalBudget(Budget existingBudget, Budget newBudget, Integer finalIncomeSum,
+			Integer finalExpenseSum) {
 		String expPerStringToUpate = 
 				dataProcessor.calculateTotalPercentage(finalExpenseSum, finalIncomeSum);
 		newBudget.setIncomeSum(finalIncomeSum);
@@ -121,7 +124,7 @@ public class BudgetAppServiceImpl implements BudgetAppService {
     @Cacheable("categoryList")
 	public List<Category> loadCategoryCache() {
     	
-    	logger.info("Load Expense Description Category");
+    	logger.info("Loading Expense Description Category");
     	
     	List<Category> categoryList = new ArrayList<>();
 		
@@ -136,14 +139,10 @@ public class BudgetAppServiceImpl implements BudgetAppService {
 	public List<Item> getTransactions() {
 		
 		String currentMonth = dataProcessor.getMonth();
-		
-		logger.info("Retrieve Expense List for current month " + currentMonth);
+		logger.info("Retrieving Expense List for current month " + currentMonth);
 		
 		List<Item> expenseList = budgetAppRepository.findExpenseListByMonth("expense", currentMonth);
-		
-		logger.info("Printing Expense List Retreived: ");
-		expenseList.forEach(System.out::println);
-		
+
 		return expenseList;
 	}
 
@@ -156,10 +155,7 @@ public class BudgetAppServiceImpl implements BudgetAppService {
 		List<Charts> chartsList = new ArrayList<>();
 		
 		Budget budget = budgetValueRepository.findByMonth(dataProcessor.getMonth());
-		Integer totalIncomeSum = budget.getIncomeSum();
-   
-		// TODO: Create a distinct list of expenses, with expense values added.And the percentages calculated.
-		List<Item> chartItemValues = dataProcessor.distinctExpenseCategorization(expenseList,totalIncomeSum);
+		List<Item> chartItemValues = dataProcessor.distinctExpenseCategorization(expenseList,budget.getIncomeSum());
 		
         String barText = "Expense Values Of Current Month";
         Charts barChart = graphResponse.createChartData("bar", chartItemValues, "Expense Values", barText);

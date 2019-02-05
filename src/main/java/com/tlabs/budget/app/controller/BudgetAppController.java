@@ -36,17 +36,9 @@ public class BudgetAppController {
 		return budgetAppResponse;
     }
 
-
 	@GetMapping("/category")
 	public ResponseEntity<List<Category>> getCategory(){
-		
-		logger.info("Get Catergories begin");
-		
-		List<Category> catList = budgetAppService.loadCategoryCache();
-		
-		logger.info("Get Catergories End");
-		
-		return ResponseEntity.ok().body(catList);
+		return ResponseEntity.ok().body(budgetAppService.loadCategoryCache());
 	}
 	
 	@GetMapping("/indicators")

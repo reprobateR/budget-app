@@ -1,9 +1,10 @@
 package com.tlabs.budget.app.aspect;
 
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.After;
+import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.AfterThrowing;
+import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
@@ -25,6 +26,10 @@ public class BudgetAppAspect {
 	
 	@Pointcut("execution(* com.tlabs.budget.app.controller.BudgetAppController.getTransactions(..))")
 	public void getTransactionJoin(){};
+	
+	@Pointcut("execution(* com.tlabs.budget.app.controller.BudgetAppController.getCategory(..))")
+	public void getCategoriesJoin(){};
+	
 	
 	@Before("getTransactionJoin()")
 	public void loggingBeforeGetTransactions(JoinPoint joinPoint) {
@@ -53,6 +58,22 @@ public class BudgetAppAspect {
 		logger.info("Ending Async Thread::= " + Thread.currentThread().getName());
 	}
 	
-	
+	@Around("getCategoriesJoin()")
+	public void loggingAroundGetCategories(ProceedingJoinPoint proceedingJoinPoint) {
+		startTime = System.currentTimeMillis();
+		logger.info("\n\n\n");
+		logger.info("Started Thread::=  " + Thread.currentThread().getName());
+		
+		try {
+			proceedingJoinPoint.proceed();
+		} catch (Throwable e) {
+			logger.error("Error Executing Load Categories",e);
+		}
+		
+		endTime = System.currentTimeMillis();
+		logger.info("Total time taken by thread::= " + Thread.currentThread().getName() + ": "
+				+ (endTime - startTime / 1000));
+		logger.info("Ending Thread::= " + Thread.currentThread().getName());
+	}
 	
 }

@@ -69,21 +69,29 @@ public class GraphResponse {
 
 		chartData.setLabels(labelList);
 
-		dataset.setLabel(label);
-		dataset.setData(dataList);
-		dataset.setBackgroundColor(backGroundColors);
-		dataset.setBorderWidth(borderWidth);
-		dataset.setBorderColor(borderColor);
-		dataset.setHoverBorderWidth(hoverBorderWidth);
-		dataset.setHoverBorderColor(hoverBorderColor);
-		List<Dataset> datasetList = new ArrayList<>();
-		datasetList.add(dataset);
+		List<Dataset> datasetList = createDataset(label, dataset, dataList, backGroundColors);
 		
 		chartData.setDatasets(datasetList);
 		chart.setChartData(chartData);
 		
 		Options options = new Options();
 		
+		setOptionsInGraph(text, chart, options);	
+		
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			String initialChart = mapper.writeValueAsString(chart);
+
+			System.out.println("Initial Chart:  " + initialChart);
+
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+
+		return chart;
+	}
+
+	private void setOptionsInGraph(String text, Charts chart, Options options) {
 		Title title = new Title();
 		title.setDisplay(true);
 		title.setText(text);
@@ -104,19 +112,21 @@ public class GraphResponse {
 		options.setLayout(layout);
 		options.setTooltips(tooltips);
 		
-		chart.setOptions(options);	
-		
-		ObjectMapper mapper = new ObjectMapper();
-		try {
-			String initialChart = mapper.writeValueAsString(chart);
+		chart.setOptions(options);
+	}
 
-			System.out.println("Initial Chart:  " + initialChart);
-
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
-		}
-
-		return chart;
+	private List<Dataset> createDataset(String label, Dataset dataset, List<String> dataList,
+			List<String> backGroundColors) {
+		dataset.setLabel(label);
+		dataset.setData(dataList);
+		dataset.setBackgroundColor(backGroundColors);
+		dataset.setBorderWidth(borderWidth);
+		dataset.setBorderColor(borderColor);
+		dataset.setHoverBorderWidth(hoverBorderWidth);
+		dataset.setHoverBorderColor(hoverBorderColor);
+		List<Dataset> datasetList = new ArrayList<>();
+		datasetList.add(dataset);
+		return datasetList;
 	}
 
 	private List<String> getBackGroundColors(String colors2) {

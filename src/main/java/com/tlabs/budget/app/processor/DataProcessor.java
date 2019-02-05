@@ -9,20 +9,21 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.stream.Collectors;
+import static java.util.stream.Collectors.toList;
 
 import javax.annotation.PostConstruct;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import com.sun.istack.internal.logging.Logger;
 import com.tlabs.budget.app.model.Data;
 import com.tlabs.budget.app.model.Item;
 
 @Component
 public class DataProcessor {
 
-	private static final Logger logger = Logger.getLogger(DataProcessor.class);
+	private static final Logger logger = LoggerFactory.getLogger(DataProcessor.class);
 
 	private Calendar cal = null;
 	private String month = "";
@@ -52,13 +53,11 @@ public class DataProcessor {
 	public List<Item> distinctExpenseCategorization(List<Item> expenseList, Integer totalIncomeSum) {
 
 		Map<String, Integer> expenseValueMap = new HashMap<>();
-		expenseList.forEach(item -> {
-			addValuesBasedOnExpenseType(expenseValueMap, item);
-		});
+		expenseList.forEach(item -> addValuesBasedOnExpenseType(expenseValueMap, item));
 
 		List<Item> finalExpenseValueList = expenseValueMap.entrySet().stream().map(e -> {
 			return setItemPercentageValue(totalIncomeSum, e);
-		}).collect(Collectors.toList());
+		}).collect(toList());
 
 		return finalExpenseValueList;
 	}
