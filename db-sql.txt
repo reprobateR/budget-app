@@ -1,0 +1,26 @@
+	First drop old schema
+
+create schema budget;
+use budget;
+CREATE TABLE category(  
+   id INT NOT NULL AUTO_INCREMENT,  
+   category_name VARCHAR(100) NOT NULL,  
+   PRIMARY KEY ( id )  
+);
+
+select * from category;
+
+CREATE TABLE transactions(  
+   id INT NOT NULL AUTO_INCREMENT,  
+   type VARCHAR(50) NOT NULL,  
+   name VARCHAR(100) NOT NULL,
+   value FLOAT NOT NULL,
+   timestamp timestamp NOT NULL,
+   month VARCHAR(50) NOT NULL,
+   PRIMARY KEY ( id )  
+);
+
+
+describe transactions;
+select * from transactions;
+truncate transactions;
