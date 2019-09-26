@@ -8,6 +8,9 @@ CREATE TABLE category(
    PRIMARY KEY ( id )  
 );
 
+ALTER TABLE category 
+MODIFY category_name VARCHAR(100) NOT NULL UNIQUE;
+
 select * from category;
 
 CREATE TABLE transactions(  
