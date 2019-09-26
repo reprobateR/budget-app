@@ -1,6 +1,5 @@
 package com.tlabs.budget.app.model;
 
-import java.time.Month;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -32,13 +31,13 @@ public class Record {
 	private Date timestamp;
 	
 	@Column(name="month")
-	private Month month;
+	private String month;
 	
 	public Record() {
 		
 	}
 
-	public Record(int id, String type, String name, Float value, Date timestamp, Month month) {
+	public Record(int id, String type, String name, Float value, Date timestamp, String month) {
 		this.id = id;
 		this.type = type;
 		this.name = name;
@@ -87,11 +86,11 @@ public class Record {
 		this.timestamp = timestamp;
 	}
 
-	public Month getMonth() {
+	public String getMonth() {
 		return month;
 	}
 
-	public void setMonth(Month month) {
+	public void setMonth(String month) {
 		this.month = month;
 	}
 

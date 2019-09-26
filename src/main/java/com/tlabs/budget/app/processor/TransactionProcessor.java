@@ -1,10 +1,12 @@
 package com.tlabs.budget.app.processor;
 
+import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.stereotype.Component;
 
@@ -15,7 +17,11 @@ import com.tlabs.budget.app.model.Transaction;
 @Component
 public class TransactionProcessor {
 
-	private static List expenseCategories = Arrays.asList("Rent", "CreditCardBill");
+	private List<String> expenseCategories;
+	
+	public void setExpenseCategories(List<String> expenseCategories) {
+		this.expenseCategories = expenseCategories;
+	}
 
 	public List<Record> validateAndMapTransactions(List<Transaction> tnxList) {
 		List<Record> recordList = new ArrayList<>();
@@ -37,10 +43,9 @@ public class TransactionProcessor {
 		record.setName(tnxName);
 		record.setValue(tnxValue);
 		
-		//TODO Month Logic Is Wrong
-		Calendar calendar = Calendar.getInstance();
-		record.setTimestamp(calendar.getTime());
-		record.setMonth(Month.of(calendar.get(Calendar.MONTH)));
+		LocalDate localDate = LocalDate.now();
+		record.setTimestamp(Calendar.getInstance().getTime());
+		record.setMonth(localDate.getMonth().name());
 		return record;
 	}
 
@@ -53,7 +58,17 @@ public class TransactionProcessor {
 			throw new RequestException("Invalid Category Name:: " + tnx.getName());
 		}
 	}
-
+	
+	public void validateMonth(String month) {
+		Set<String> monthSet = new HashSet<>();
+		for(Month monthVal: Month.values()) {
+			monthSet.add(monthVal.name());
+		}
+		if(!monthSet.contains(month)) {
+			throw new RequestException("Invalid Month Sent In Request");
+		}
+	}
+	
 	public Float formatNumberInput(String value) {
 		Float outputValue = 0F;
 		try {

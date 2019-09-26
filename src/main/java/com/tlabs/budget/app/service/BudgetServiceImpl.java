@@ -1,6 +1,8 @@
 package com.tlabs.budget.app.service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,4 +36,16 @@ public class BudgetServiceImpl implements BudgetService {
 		categoryRepository.save(category);
 	}
 
+	@Override
+	public Set<Category> getAllCategories() {
+		Set<Category> categorySet = new HashSet<>();
+		categoryRepository.findAll().forEach(c -> categorySet.add(c));
+		return categorySet;
+	}
+
+	@Override
+	public List<Record> getAllRecordsByMonth(String month) {
+		return budgetRepository.findByMonth(month);
+	}
+	
 }
